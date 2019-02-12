@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Test</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" media="screen" href="main.css">
+	<script src="js/vue.min.js"></script>
+</head>
+<body>
+	<div id="app">
+		<h2>{{message}}</h2>
+		<test 
+			head="Component header" 
+			:parent-event-num="ev_num | smile"
+			v-on:component-event="regEvent"></test>
+	</div>
+
+
+<script>
+Vue.component('test', {
+	props: ['head', 'parentEventNum'],
+	template: `<div>
+		<div><b>{{head}}</b></div>
+		<div><b>Component var: </b><span>Emmited {{ev_num}} events, registered {{parentEventNum}} events in parent</span></div>
+		<a href="#" @click.prevent="emitComponentEvent">Event emmiter</a>
+	</div>`,
+	data: function() {
+		return {
+			ev_num: 0
+		}
+	},
+	methods: {
+		emitComponentEvent: function() {
+			this.$emit("component-event", ++this.ev_num);
+		}
+	}
+});
+</script>
+
+<script>
+var app = new Vue({
+	el: '#app',
+	data: {
+		message: "Test",
+		ev_num: 0
+	},
+	methods: {
+		regEvent: function(payload) {
+			this.ev_num = payload;
+		}
+	},
+	filters: {
+		smile: function(value) {
+			return  value + (value%2==1 ? ' <O.o>' : ' <o.O>');
+		}
+	}
+});
+</script>
+
+
+
+</body>
+</html>
